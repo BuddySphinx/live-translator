@@ -20,13 +20,12 @@ export function useMicrophoneSelection() {
 
       // Enumerate devices
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const audioInputs = devices
-        .filter(device => device.kind === 'audioinput')
-        .map(device => ({
-          deviceId: device.deviceId,
-          label: device.label || `Microphone ${audioInputs.length + 1}`,
-        }));
-
+      const audioInputs: MicrophoneDevice[] = devices
+  .filter((device: MediaDeviceInfo) => device.kind === 'audioinput')
+  .map((device: MediaDeviceInfo, index: number) => ({
+    deviceId: device.deviceId,
+    label: device.label || `Microphone ${index + 1}`,
+  }));      
       setMicrophones(audioInputs);
       setHasPermission(true);
 
