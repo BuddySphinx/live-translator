@@ -177,6 +177,8 @@ export default function Home() {
       if (autoDetectLanguage) {
         const detected = detect(transcript);
         if (detected !== 'unknown' && detected !== sourceLang.value) {
+          console.log('🌍 Language detected:', detected, 'Previous:', sourceLang.value); // Debug log
+
           // Auto-switch source language
           const newSourceLang = LANGUAGES.find(l => l.value === detected);
           if (newSourceLang) {
@@ -190,7 +192,7 @@ export default function Home() {
         }
       }
     }
-  }, [transcript, autoDetectLanguage, sourceLang.value]);
+  }, [transcript, autoDetectLanguage]);
 
   if (!isSupported) {
     return (

@@ -24,10 +24,25 @@ export function detectLanguage(text: string): 'english' | 'chinese' | 'unknown' 
   const chinesePercentage = (chineseCharCount / totalChars) * 100;
   const englishPercentage = (englishCharCount / totalChars) * 100;
 
-  // Detection thresholds
-  const CHINESE_THRESHOLD = 30; // 30% Chinese characters = Chinese
-  const ENGLISH_THRESHOLD = 50;  // 50% English characters = English
+  // Lower thresholds for more sensitive detection
+  const CHINESE_THRESHOLD = 20; // 20% Chinese characters = Chinese (was 30%)
+  const ENGLISH_THRESHOLD = 30;  // 30% English characters = English (was 50%)
 
+  // Prioritize most recently spoken content (last 30 chars)
+  const recentText = text.slice(-30);
+  const recentChineseChars = recentText.match(chineseCharRegex);
+  const recentEnglishChars = recentText.match(englishCharRegex);
+  const recentChineseCount = recentChineseChars ? recentChineseChars.length : 0;
+  const recentEnglishCount = recentEnglishChars ? recentEnglishChars.length : 0;
+
+  // Check recent content first for quicker switching
+  if (recentChineseCount > 2 && recentChineseCount > recentEnglishCount) {
+    return 'chinese';
+  } else if (recentEnglishCount > 2 && recentEnglishCount > recentChineseCount) {
+    return 'english';
+  }
+
+  // Fall back to overall percentages
   if (chinesePercentage >= CHINESE_THRESHOLD) {
     return 'chinese';
   } else if (englishPercentage >= ENGLISH_THRESHOLD) {
