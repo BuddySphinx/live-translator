@@ -173,8 +173,8 @@ export default function Home() {
     if (transcript) {
       setSourceText(transcript);
 
-      // Auto-detect language if enabled
-      if (autoDetectLanguage && !isListening) {
+      // Auto-detect language if enabled (detects while speaking!)
+      if (autoDetectLanguage) {
         const detected = detect(transcript);
         if (detected !== 'unknown' && detected !== sourceLang.value) {
           // Auto-switch source language
@@ -315,7 +315,7 @@ export default function Home() {
             <select
               value={sourceLang.value}
               onChange={(e) => {
-                if (!isListening && !autoDetectLanguage) {
+                if (!autoDetectLanguage) {
                   const selected = LANGUAGES.find((lang) => lang.value === e.target.value);
                   if (selected) {
                     setSourceLang(selected);
@@ -326,7 +326,7 @@ export default function Home() {
                 }
               }}
               className={`px-4 py-2 text-base font-semibold bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${autoDetectLanguage ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={isListening || autoDetectLanguage}
+              disabled={autoDetectLanguage}
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.value} value={lang.value}>
@@ -347,7 +347,7 @@ export default function Home() {
             <select
               value={targetLang.value}
               onChange={(e) => {
-                if (!isListening && !autoDetectLanguage) {
+                if (!autoDetectLanguage) {
                   const selected = LANGUAGES.find((lang) => lang.value === e.target.value);
                   if (selected) {
                     setTargetLang(selected);
@@ -358,7 +358,7 @@ export default function Home() {
                 }
               }}
               className={`px-4 py-2 text-base font-semibold bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${autoDetectLanguage ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={isListening || autoDetectLanguage}
+              disabled={autoDetectLanguage}
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.value} value={lang.value}>
@@ -524,7 +524,7 @@ export default function Home() {
             <p className="text-xs text-gray-600">
               {isListening
                 ? autoDetectLanguage
-                  ? `Listening... (${detectedLanguage !== 'unknown' ? `Detected: ${detectedLanguage}` : 'Detecting language...'})`
+                  ? `Listening... (Detected: ${detectedLanguage !== 'unknown' ? detectedLanguage : 'Analyzing...'} ${confidence}% confidence)`
                   : 'Listening continuously... Speak naturally'
                 : 'Click the microphone to start real-time translation'}
             </p>
